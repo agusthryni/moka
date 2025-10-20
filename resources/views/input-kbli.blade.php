@@ -1,132 +1,177 @@
 @extends('layout.main')
 
+@section('title', 'MOKA | FORM DATA PEGAWAI')
+
 @section('content')
-<section class="content-header">
+<section class="content" style="padding-top: 100px;">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Tambah Data KBLI Industri</h1>
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-success text-white">
+                <h5>DATA PEGAWAI</h5>
             </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="/">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('data-kbli') }}">Data KBLI</a></li>
-                    <li class="breadcrumb-item active">Tambah KBLI</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</section>
-<div class="container">
-    <div class="row">
-        <div class="col-md-12 mt-2">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Input Data KBLI</h3>
-                </div>
-                <form id="kbli-form" action="{{ route('data-kbli.store') }}" method="POST">
-                    @csrf
-                    <div class="card-body">
-                        <div id="kbli-input-container">
-                            <div class="row kbli-input-row">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="id_kbli[]">ID KBLI</label>
-                                        <input type="number" class="form-control" name="id_kbli[]" max="99999" title="ID KBLI harus terdiri dari maksimal 5 digit angka." required>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label for="jenis_kbli[]">Jenis KBLI</label>
-                                        <input type="text" class="form-control" name="jenis_kbli[]" required>
-                                    </div>
-                                </div>
-                                <div class="col mb-3 d-flex align-items-end">
-                                    <button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeKbliRow(this)">Hapus</button>
-                                </div>
+            <div class="card-body">
+                <form id="pegawai-form">
+                    <div id="pegawai-container">
+                        <div class="pegawai-item">
+                            <div class="form-group">
+                                <label>Nama Pegawai</label>
+                                <input type="text" class="form-control" name="nama_pegawai[]" required>
+                            </div>
+                            <div class="form-group">
+                                <label>NIP</label>
+                                <input type="number" class="form-control" name="nip[]" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Jabatan</label>
+                                <input type="text" class="form-control" name="jabatan[]" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Bidang</label>
+                                <select class="form-control" name="bidang[]" required>
+                                    <option value="sekretariat">Sekretariat</option>
+                                    <option value="Teknologi Sumber Daya Industri">Teknologi Sumber Daya Industri</option>
+                                    <option value="UMKM">UMKM</option>
+                                    <option value="Koperasi">Koperasi</option>
+                                    <option value="UPT Somber">UPT Somber</option>
+                                    <option value="UPT Teritip">UPT Teritip</option>
+                                    <option value="Kepala Dinas">Kepala Dinas</option>
+                                </select>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-secondary" id="add-row">Tambah Data</button>
-                        <div id="error-container"></div> <!-- Container untuk menampilkan pesan error -->
                     </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary ml-4">Submit</button>
+
+                    <button type="button" class="btn btn-success mt-2" id="add-pegawai">Tambah Pegawai</button>
+
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-success" id="saveBtn">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
-    document.getElementById('kbli-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        var form = this;
-        var formData = new FormData(form);
+    $(document).ready(function() {
+        $('#pegawai-form').on('submit', function(e) {
+            e.preventDefault();
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.error,
-                });
-            } else {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: data.success,
-                }).then(() => {
-                    window.location.href = "{{ route('data-kbli') }}";
-                });
-            }
-        })
-        .catch(error => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Terjadi kesalahan saat menyimpan data.',
+            // 🔹 Validasi input kosong (tampil border merah + ikon)
+            let inputs = $('#pegawai-form').find('input[required], select[required]');
+            let isValid = true;
+
+            inputs.each(function() {
+                if (!$(this).val().trim()) {
+                    $(this).addClass('is-invalid');
+
+                    // Tambahkan pesan error kecil kalau belum ada
+                    if ($(this).next('.invalid-feedback').length === 0) {
+                        $(this).after('<div class="invalid-feedback">Wajib diisi</div>');
+                    }
+
+                    isValid = false;
+                } else {
+                    $(this).removeClass('is-invalid');
+                    $(this).next('.invalid-feedback').remove();
+                }
+            });
+
+            // 🔹 Jika ada input kosong, hentikan submit
+            if (!isValid) return;
+
+            // 🔹 Lanjutkan kirim data jika valid
+            $.ajax({
+                url: "{{ route('data-kbli.store') }}",
+                method: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                        }).then(function() {
+                            window.location.href = "{{ url('/siiba/data-kbli') }}";
+                        });
+                    }
+                },
+                error: function(response) {
+                    if (response.status === 400) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.responseJSON.message,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Terjadi kesalahan saat mengirim data.',
+                        });
+                    }
+                }
             });
         });
     });
+</script>
 
-    function removeKbliRow(button) {
-        var row = button.closest('.kbli-input-row');
-        row.remove();
-    }
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-    document.getElementById('add-row').addEventListener('click', function() {
-        var container = document.getElementById('kbli-input-container');
-        var newRow = document.createElement('div');
-        newRow.classList.add('row', 'kbli-input-row');
-        newRow.innerHTML = `
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label for="id_kbli[]">ID KBLI</label>
-                    <input type="number" class="form-control" name="id_kbli[]" max="99999" title="ID KBLI harus terdiri dari maksimal 5 digit angka." required>
-                </div>
+    const addPegawaiBtn = document.getElementById("add-pegawai");
+    const pegawaiContainer = document.getElementById("pegawai-container");
+
+    // === Fungsi Tambah Form Pegawai ===
+    addPegawaiBtn.addEventListener("click", function () {
+        const pegawaiItem = document.createElement("div");
+        pegawaiItem.classList.add("pegawai-item", "border", "p-3", "mb-3", "rounded");
+
+        pegawaiItem.innerHTML = `
+            <div class="form-group mb-2">
+                <label>Nama Pegawai</label>
+                <input type="text" class="form-control" name="nama_pegawai[]" placeholder="Masukkan nama pegawai" required>
             </div>
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label for="jenis_kbli[]">Jenis KBLI</label>
-                    <input type="text" class="form-control" name="jenis_kbli[]" required>
-                </div>
+            <div class="form-group mb-2">
+                <label>NIP</label>
+                <input type="number" class="form-control" name="nip[]" placeholder="Masukkan NIP" required>
             </div>
-            <div class="col mb-3 d-flex align-items-end">
-                <button type="button" class="btn btn-danger btn-sm remove-row" onclick="removeKbliRow(this)">Hapus</button>
+            <div class="form-group mb-2">
+                <label>Jabatan</label>
+                <input type="text" class="form-control" name="jabatan[]" placeholder="Masukkan jabatan" required>
+            </div>
+            <div class="form-group mb-2">
+                <label>Bidang</label>
+                <select class="form-control" name="bidang[]" required>
+                    <option value="">-- Pilih Bidang --</option>
+                    <option value="Sekretariat">Sekretariat</option>
+                    <option value="Teknologi Sumber Daya Industri">Teknologi Sumber Daya Industri</option>
+                    <option value="UMKM">UMKM</option>
+                    <option value="Koperasi">Koperasi</option>
+                    <option value="UPT Somber">UPT Somber</option>
+                    <option value="UPT Teritip">UPT Teritip</option>
+                    <option value="Kepala Dinas">Kepala Dinas</option>
+                </select>
+            </div>
+            <div class="text-end mt-2">
+                <button type="button" class="btn btn-danger btn-sm remove-pegawai">
+                    <i class="fas fa-trash-alt"></i> Hapus
+                </button>
             </div>
         `;
-        container.appendChild(newRow);
+
+        pegawaiContainer.appendChild(pegawaiItem);
     });
+
+    // === Fungsi Hapus Form Pegawai ===
+    pegawaiContainer.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-pegawai") || e.target.closest(".remove-pegawai")) {
+            e.target.closest(".pegawai-item").remove();
+        }
+    });
+
+});
 </script>
+
 @endsection

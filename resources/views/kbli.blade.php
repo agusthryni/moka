@@ -1,21 +1,13 @@
 @extends('layout.main')
 
-@section('title', 'SIIBA | Data KBLI')
+@section('title', 'MOKA | DATA PEGAWAI')
 
 @section('content')
-<section class="content-header">
+    <section class="content-header text-center py-5 mt-5">
         <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Data KBLI Industri</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Data KBLI</li>
-                    </ol>
-                </div>
-            </div>
+            <h1 class="text-success font-weight-bold mb-1">LAPORAN DAN MONEV KINERJA PEGAWAI</h1>
+            <h6 class="text-success">Dinas Koperasi, UMKM, dan Perindustrian Kota Balikpapan</h6>
+            <a href="{{ route('data-kbli.input') }}" class="btn btn-success btn-lg mt-4">Input Data</a>
         </div>
     </section>
 
@@ -37,25 +29,14 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Daftar KBLI Industri</h3>
-                        </div>
-
                         <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-12">
-                                    <a href="{{ route('data-kbli.input') }}" class="btn btn-primary">Tambah Data</a>
-                                    <a href="{{ route('data-kbli') }}" class="btn btn-info ml-1">
-                                        <img src="{{ asset('images/refresh.png') }}" alt="Refresh Icon"
-                                            style="width: 21px; height: 21px; padding: 1px;"> Muat Ulang
-                                    </a>
-                                </div>
-                            </div>
-                            <table id="example1" class="table table-bordered table-striped display responsive nowrap">
+                            <table id="example1" class="table table-responsive table-striped display responsive nowrap">
                                 <thead>
                                     <tr>
-                                        <th>KBLI</th>
-                                        <th>Jenis KBLI</th>
+                                        <th>Nama Pegawai</th>
+                                        <th>NIP</th>
+                                        <th>Jabatan</th>
+                                        <th>Bidang</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -63,6 +44,8 @@
                                     @foreach ($kbli_industri as $kbli)
                                         <tr>
                                             <td>{{ $kbli->id_kbli }}</td>
+                                            <td>{{ $kbli->jenis_kbli }}</td>
+                                            <td>{{ $kbli->jenis_kbli }}</td>
                                             <td>{{ $kbli->jenis_kbli }}</td>
                                             <td>
                                                 <a href="{{ Route('data-kbli.edit', $kbli->id_kbli) }}"
@@ -89,15 +72,12 @@
                     targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
                     className: 'dt-head-center'
                 }],
-                columns: [{
-                        data: "id_kbli"
-                    },
-                    {
-                        data: "jenis_kbli"
-                    },
-                    {
-                        data: "aksi"
-                    }
+                columns: [
+                    {data: "id_kbli"},
+                    {data: "jenis_kbli"},
+                    {data: "jenis_kbli"},
+                    {data: "jenis_kbli"},
+                    {data: "aksi"}
                 ]
             });
         });

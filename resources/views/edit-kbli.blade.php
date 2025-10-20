@@ -5,13 +5,13 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Edit Data KBLI Industri</h1>
+                    <h1>Edit Data Pegawai</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('data-kbli') }}">Data KBLI</a></li>
-                        <li class="breadcrumb-item active">Edit KBLI</li>
+                        <li class="breadcrumb-item active">Edit Pegawai</li>
                     </ol>
                 </div>
             </div>
@@ -24,27 +24,47 @@
                 <!-- Card for Data Pelaku Usaha -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Input Data KBLI</h3>
+                        <h3 class="card-title">Input Data Pegawai</h3>
                     </div>
                     <form id="kbli-form" action="{{ route('data-kbli.update', $kbli->id_kbli) }}" method="post">
                         @csrf
                         @method('PUT') <!-- Tambahkan method PUT -->
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-12">
                                     <!-- ID KBLI -->
                                     <div class="form-group">
-                                        <label for="id_kbli">ID KBLI</label>
+                                        <label for="id_kbli">Nama Pegawai</label>
                                         <input type="number" class="form-control" id="id_kbli" name="id_kbli"
                                             max="99999" value="{{ old('id_kbli', $kbli->id_kbli) }}" required>
                                         <div class="text-danger" id="error-id_kbli"></div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <!-- Jenis KBLI -->
                                     <div class="form-group">
-                                        <label for="jenis_kbli">Jenis KBLI</label>
+                                        <label for="jenis_kbli">NIP</label>
+                                        <input type="text" class="form-control" id="jenis_kbli" name="jenis_kbli"
+                                            value="{{ old('jenis_kbli', $kbli->jenis_kbli) }}" required>
+                                        <div class="text-danger" id="error-jenis_kbli"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <!-- ID KBLI -->
+                                    <div class="form-group">
+                                        <label for="id_kbli">Jabatan</label>
+                                        <input type="number" class="form-control" id="id_kbli" name="id_kbli"
+                                            max="99999" value="{{ old('id_kbli', $kbli->id_kbli) }}" required>
+                                        <div class="text-danger" id="error-id_kbli"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <!-- Jenis KBLI -->
+                                    <div class="form-group">
+                                        <label for="jenis_kbli">Bidang</label>
                                         <input type="text" class="form-control" id="jenis_kbli" name="jenis_kbli"
                                             value="{{ old('jenis_kbli', $kbli->jenis_kbli) }}" required>
                                         <div class="text-danger" id="error-jenis_kbli"></div>

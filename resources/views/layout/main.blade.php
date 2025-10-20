@@ -4,11 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'AdminLTE 3 | Dashboard')</title>
+    <title>@yield('title', 'AdminLTE 3 | MOKA')</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <!-- <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap">
     <style>
@@ -60,134 +58,50 @@
     @yield('css')
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition layout-top-nav">
     <div class="wrapper">
-
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ asset('images/pemkotbpp.png') }}" alt="BPPLogo" height="60"
-                width="60">
+            <img class="animation__shake" src="{{ asset('images/pemkotbpp.png') }}" alt="BPPLogo" height="60" width="60">
         </div>
 
         <!-- Navbar -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
-                            class="fas fa-bars"></i></a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ url('home') }}" class="nav-link">Home</a>
-                </li>
-            </ul>
-
-            <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </a>
-                </li>
-                <!-- Logout Button -->
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="POST" class="form-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger">Logout</button>
-                    </form>
-                </li>
-            </ul>
-        </nav>
-        <!-- /.navbar -->
-
-        <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="{{ url('home') }}" class="brand-link">
-                <img src="{{ asset('images/pemkotbpp.png') }}" alt="BPP Logo" class="brand-image" style="opacity: .8">
-                <span class="brand-text fw-bolder">SIIBA</span>
-            </a>
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Sidebar user panel (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
-                    <div class="image mr-2">
-                        <i class="bi bi-person-circle text-white" style="font-size: 2rem;"></i>
-                    </div>
-                    <div class="info">
-                        <a class="d-block text-white">TSDI DKUMKMP</a>
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light shadow-sm fixed-top" style="border-bottom: 2px solid #f2f2f2;">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <!-- Left -->
+                <div class="d-flex align-items-center">
+                    <img src="{{ asset('images/pemkotbpp.png') }}" alt="Logo Pemkot Balikpapan" height="45" class="ml-2 mr-3">
+                    <div class="d-flex flex-column">
+                        <span class="font-weight-bold text-success" style="font-size: 18px; letter-spacing: 1px;">MOKA</span>
+                        <small class="text-success" style="font-size: 12px; letter-spacing: 2px;">DKUMKMP KOTA BALIKPAPAN</small>
                     </div>
                 </div>
 
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-                            with font-awesome or any other icon font library -->
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard-industri') }}" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('data-industri') }}" class="nav-link">
-                                <i class="nav-icon fas fa-industry"></i>
-                                <p>
-                                    Data Industri
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('data-tenaker') }}" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Tenaga Kerja
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('data-investasi') }}" class="nav-link">
-                                <i class="nav-icon fas fa-chart-line"></i>
-                                <p>
-                                    Investasi
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('data-kapasitas-produksi') }}" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p>
-                                    Kapasitas Produksi
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('data-kbli') }}" class="nav-link">
-                                <i class="nav-icon fas fa-code"></i>
-                                <p>
-                                    KBLI
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('data-pertumbuhan') }}" class="nav-link">
-                                <i class="nav-icon fas fa-chart-line"></i>
-                                <p>
-                                    Pertumbuhan
-                                </p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
+                <!-- Right -->
+                <ul class="navbar-nav d-flex align-items-center">
+                    <li class="nav-item mx-2">
+                        <a href="{{ route('dashboard-industri') }}" 
+                        class="nav-link text-success {{ request()->routeIs('dashboard-industri') ? 'font-weight-bold' : '' }}">
+                        Home
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a href="{{ route('data-industri') }}" 
+                        class="nav-link text-success {{ request()->routeIs('data-industri') ? 'font-weight-bold' : '' }}">
+                        Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a href="{{ route('data-kbli') }}" 
+                        class="nav-link text-success {{ request()->routeIs('data-kbli') ? 'font-weight-bold' : '' }}">
+                        Data Pegawai
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <!-- /.sidebar -->
-        </aside>
+        </nav>
+
+        <!-- /.navbar -->
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -202,12 +116,6 @@
                 <b>DKUMKMP</b> Kota Balikpapan
             </div>
         </footer>
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
 
@@ -243,10 +151,6 @@
     <script src="{{ asset('lte/dist/js/adminlte.js') }}"></script>
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {{-- <!-- AdminLTE for demo purposes -->
-    <script src="{{ asset('lte/dist/js/demo.js') }}"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('lte/dist/js/pages/dashboard.js') }}"></script> --}}
     <!-- DataTables  & Plugins -->
     <script src="{{ asset('lte/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
@@ -268,7 +172,6 @@
                 "lengthChange": true,
                 "pageLength": 10,
                 "autoWidth": false,
-                // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
                 buttons: [
                     {
                         extend: 'copyHtml5',
@@ -290,7 +193,6 @@
                         extend: 'print',
                         exportOptions: { columns: ':visible:not(:last-child)' }
                     },
-                    'colvis'
                 ]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
@@ -307,5 +209,4 @@
         });
     </script>
 </body>
-
 </html>
