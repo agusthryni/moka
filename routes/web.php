@@ -1,41 +1,32 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataController;
-use App\Http\Controllers\InvestasiController;
-use App\Http\Controllers\KapasitasController;
 use App\Http\Controllers\KbliController;
-use App\Http\Controllers\TenagaKerjaController;
 use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
-    return redirect('/siiba/dashboard');
+    return redirect('/moka/data-laporan');
 });
 
 // Home
-Route::get('/siiba/dashboard', [DashboardController::class, 'index'])->name('dashboard-industri');
+// Route::get('/siiba/dashboard', [DashboardController::class, 'index'])->name('dashboard-industri');
 
 // Dashboard
-Route::get('/siiba/data-industri', [DataController::class, 'index'])->name('data-industri');
-Route::get('/siiba/data-industri/input-industri', [DataController::class, 'inputindustri'])->name('data-industri.input');
-Route::post('/siiba/data-industri', [DataController::class, 'storeindustri'])->name('data-industri.store');
-Route::delete('/siiba/data-industri/{id}', [DataController::class, 'destroyindustri'])->name('data-industri.delete');
-Route::get('/siiba/data-industri/edit-industri/{id}', [DataController::class, 'editindustri'])->name('data-industri.edit');
-Route::put('/siiba/data-industri/{id}', [DataController::class, 'updateindustri'])->name('data-industri.update');
+Route::get('/moka/data-laporan', [DataController::class, 'index'])->name('data-industri');
+Route::get('/moka/data-laporan/input-industri', [DataController::class, 'inputindustri'])->name('data-industri.input');
+Route::post('/moka/data-laporan', [DataController::class, 'storeindustri'])->name('data-industri.store');
+Route::delete('/moka/data-laporan/{id}', [DataController::class, 'destroyindustri'])->name('data-industri.delete');
+Route::get('/moka/data-laporan/edit-industri/{id}', [DataController::class, 'editindustri'])->name('data-industri.edit');
+Route::put('/moka/data-laporan/{id}', [DataController::class, 'updateindustri'])->name('data-industri.update');
 
 // Data Pegawai
-Route::get('/siiba/data-kbli', [KbliController::class, 'showkbli'])->name('data-kbli');
-Route::get('/siiba/data-kbli/input-kbli', [KbliController::class, 'inputkbli'])->name('data-kbli.input');
-Route::post('/siiba/data-kbli', [KbliController::class, 'storekbli'])->name('data-kbli.store');
-Route::get('/siiba/data-kbli/edit-kbli/{id}', [KbliController::class, 'editkbli'])->name('data-kbli.edit');
-Route::put('/siiba/data-kbli/update-kbli/{id}', [KbliController::class, 'updatekbli'])->name('data-kbli.update');
-Route::delete('/siiba/data-kbli/delete-kbli/{id}', [KbliController::class, 'deletekbli'])->name('data-kbli.delete');
-
-// Tenaga Kerja
-Route::get('/siiba/data-tenaga-kerja', [TenagaKerjaController::class, 'index'])->name('data-tenaker');
-Route::get('/siiba/data-investasi', [InvestasiController::class, 'index'])->name('data-investasi');
-Route::get('/siiba/data-kapasitas-produksi', [KapasitasController::class, 'index'])->name('data-kapasitas-produksi');
+Route::get('/moka/data-pegawai', [KbliController::class, 'showkbli'])->name('data-kbli');
+Route::get('/moka/data-pegawai/input-kbli', [KbliController::class, 'inputkbli'])->name('data-kbli.input');
+Route::post('/moka/data-pegawai', [KbliController::class, 'storekbli'])->name('data-kbli.store');
+Route::get('/moka/data-pegawai/edit-kbli/{id}', [KbliController::class, 'editkbli'])->name('data-kbli.edit');
+Route::put('/moka/data-pegawai/update-kbli/{id}', [KbliController::class, 'updatekbli'])->name('data-kbli.update');
+Route::delete('/moka/data-pegawai/delete-kbli/{id}', [KbliController::class, 'deletekbli'])->name('data-kbli.delete');
 
 // API Data Industri kelurahan
 Route::get('/api/industri-kelurahan', function () {

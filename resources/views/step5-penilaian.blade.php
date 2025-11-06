@@ -1,13 +1,13 @@
 @extends('layout.main')
 
-@section('title', 'MOKA | DATA PEGAWAI')
+@section('title', 'MOKA | DASHBOARD')
 
 @section('content')
     <section class="content-header text-center py-5 mt-5">
         <div class="container-fluid">
             <h1 class="text-success font-weight-bold mb-1">LAPORAN DAN MONEV KINERJA PEGAWAI</h1>
             <h6 class="text-success">Dinas Koperasi, UMKM, dan Perindustrian Kota Balikpapan</h6>
-            <a href="{{ route('data-kbli.input') }}" class="btn btn-success btn-lg mt-4">Input Data</a>
+            <a href="{{ route('data-laporan.input') }}" class="btn btn-success btn-lg mt-4">Input Laporan</a>
         </div>
     </section>
 
@@ -26,36 +26,28 @@
                 </div>
             @endif
 
-            <h5><span>Daftar Pegawai</span></h5>
-            <hr>
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <table id="example1" class="table table-sm compact display responsive nowrap">
+                            <table id="example1" class="table table-bordered table-striped table-sm compact display responsive nowrap">
                                 <thead>
                                     <tr>
-                                        <th>No</th>
-                                        <th>Nama Pegawai</th>
-                                        <th>NIP</th>
-                                        <th>Jabatan</th>
-                                        <th>Bidang</th>
+                                        <th>Pimpinan</th>
+                                        <th>Penilaian</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($kbli_industri as $kbli)
+                                    @foreach ($data_laporan as $laporan)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $kbli->id_kbli }}</td>
-                                            <td>{{ $kbli->jenis_kbli }}</td>
-                                            <td>{{ $kbli->jenis_kbli }}</td>
-                                            <td>{{ $kbli->jenis_kbli }}</td>
+                                            <td>{{ $laporan->pimpinan }}</td>
+                                            <td>{{ $laporan->penilaian }}</td>
                                             <td>
-                                                <a href="{{ Route('data-kbli.edit', $kbli->id_kbli) }}"
+                                                <a href="{{ route('data-laporan.edit', $usaha->id_usaha) }}"
                                                     class="btn btn-warning btn-sm">Edit</a>
                                                 <button class="btn btn-danger btn-sm"
-                                                    onclick="confirmDelete('{{ route('data-kbli.delete', $kbli->id_kbli) }}')">Hapus</button>
+                                                    onclick="confirmDelete('{{ route('data-laporan.delete', $usaha->id_usaha) }}')">Hapus</button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -71,17 +63,15 @@
     <script>
         $(document).ready(function() {
             $('#example1').DataTable({
-                responsive: true,
+                responsive: false,
+                scrollX: true
                 columnDefs: [{
-                    targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+                    targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     className: 'dt-head-center'
                 }],
                 columns: [
-                    {data: "null"},
-                    {data: "id_kbli"},
-                    {data: "jenis_kbli"},
-                    {data: "jenis_kbli"},
-                    {data: "jenis_kbli"},
+                    {data: "pimpinan"},
+                    {data: "penilaian"},
                     {data: "aksi"}
                 ]
             });

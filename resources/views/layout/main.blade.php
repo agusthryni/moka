@@ -79,12 +79,12 @@
 
                 <!-- Right -->
                 <ul class="navbar-nav d-flex align-items-center">
-                    <li class="nav-item mx-2">
+                    {{-- <li class="nav-item mx-2">
                         <a href="{{ route('dashboard-industri') }}" 
                         class="nav-link text-success {{ request()->routeIs('dashboard-industri') ? 'font-weight-bold' : '' }}">
                         Home
                         </a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item mx-2">
                         <a href="{{ route('data-industri') }}" 
                         class="nav-link text-success {{ request()->routeIs('data-industri') ? 'font-weight-bold' : '' }}">
@@ -131,6 +131,9 @@
     <script src="{{ asset('lte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- ChartJS -->
     <script src="{{ asset('lte/plugins/chart.js/Chart.min.js') }}"></script>
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- Sparkline -->
     <script src="{{ asset('lte/plugins/sparklines/sparkline.js') }}"></script>
     <!-- JQVMap -->
@@ -174,23 +177,7 @@
                 "autoWidth": false,
                 buttons: [
                     {
-                        extend: 'copyHtml5',
-                        exportOptions: { columns: ':visible:not(:last-child)' }
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        exportOptions: { columns: ':visible:not(:last-child)' }
-                    },
-                    {
                         extend: 'excelHtml5',
-                        exportOptions: { columns: ':visible:not(:last-child)' }
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        exportOptions: { columns: ':visible:not(:last-child)' }
-                    },
-                    {
-                        extend: 'print',
                         exportOptions: { columns: ':visible:not(:last-child)' }
                     },
                 ]

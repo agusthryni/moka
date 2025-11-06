@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <h1 class="text-success font-weight-bold mb-1">LAPORAN DAN MONEV KINERJA PEGAWAI</h1>
             <h6 class="text-success">Dinas Koperasi, UMKM, dan Perindustrian Kota Balikpapan</h6>
-            <a href="{{ route('data-industri.input') }}" class="btn btn-success btn-lg mt-4">Input Laporan</a>
+            <a href="{{ route('data-industri.input') }}" class="btn btn-success btn-lg mt-4">Masukkan Laporan</a>
         </div>
     </section>
 
@@ -26,13 +26,54 @@
                 </div>
             @endif
 
-            <div class="row">
+            {{-- === Form Filter Awal === --}}
+            <section class="content">     
+                <form id="filterForm" class="form-horizontal" style="max-width: 600px;">
+                    <div class="form-group row mb-3">
+                        <label for="periode" class="col-sm-3 font-weight-normal">Periode</label>
+                        <div class="col-sm-6">
+                            <select id="periode" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label for="jenisData" class="col-sm-3 font-weight-normal">Bidang</label>
+                        <div class="col-sm-6">
+                            <select id="jenisData" class="form-control">
+                                <option value="">Pilih Bidang</option>
+                                <option value="semua">Semua Bidang</option>
+                                <option value="mikro">Sekretariat</option>
+                                <option value="kecil">TSDI</option>
+                                <option value="menengah">IKM</option>
+                                <option value="besar">Koperasi</option>
+                                <option value="upt">UPT</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3 d-flex">
+                            <button type="submit" class="btn btn-success">Cari</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Hasil informasi filter -->
+                <div id="infoData" style="margin-top: 30px; display:none;">
+                    <h5>
+                        <span id="judulData">Kapasitas Produksi (0 Laporan)</span>
+                    </h5>
+                    <small class="text-muted fst-italic" id="tanggalData">
+                        Data per tanggal -
+                    </small>
+                    <hr>
+                </div>
+            </section>
+
+            {{-- === Tabel Data Industri === --}}
+            <div id="dataContainer" class="row" style="display: none;">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped table-sm compact display responsive nowrap">
+                            <table id="example1" class="table table-sm compact display responsive nowrap">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Nama Pelapor</th>
                                         <th>Jabatan Pelapor</th>
                                         <th>Nama Pimpinan Monev</th>
@@ -56,6 +97,7 @@
                                 <tbody>
                                     @foreach ($pelakuUsaha as $usaha)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $usaha->nama }}</td>
                                             <td>{{ $usaha->NIB }}</td>
                                             <td>{{ $usaha->jenis_badan_usaha }}</td>
@@ -94,12 +136,13 @@
         $(document).ready(function() {
             $('#example1').DataTable({
                 responsive: false,
-                scrollX: true
-                columnDefs: [{
+                scrollX: true,
+                columnDefs: [
                     targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                     className: 'dt-head-center'
-                }],
+                ],
                 columns: [
+                    {data: "null"},
                     {data: "nama"},
                     {data: "NIB"},
                     {data: "jenis_badan_usaha"},
@@ -183,7 +226,8 @@
                     'Muara Rapak', 'Gunung Samarinda', 'Batu Ampar', 'Karang Joang',
                     'Gunung Samarinda Baru', 'Margo Mulyo', 'Batu Ampar Timur', 'Marga Sari', 'Karang Rejo',
                     'Karang Jati'
-                ]
+                ],
+                'bidang': ['Sekretariat', 'TSDI', 'IKM', 'Koperasi', 'UPT']
             };
 
             filter.addEventListener('change', function() {
@@ -202,55 +246,64 @@
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let currentStep = 1;
-            const totalSteps = document.querySelectorAll('.step').length;
+        const selectPeriode = document.getElementById("periode");
+        const currentYear = new Date().getFullYear();
+        const currentMonth = new Date().getMonth() + 1;
 
-            // === Navigasi antar step ===
-            document.getElementById('next-step').addEventListener('click', function () {
-                if (currentStep < totalSteps) {
-                    document.getElementById(`step${currentStep}`).style.display = 'none';
-                    currentStep++;
-                    document.getElementById(`step${currentStep}`).style.display = 'block';
-                }
-            });
+        // Hitung triwulan saat ini
+        const currentTriwulan = Math.ceil(currentMonth / 3);
 
-            document.getElementById('prev-step').addEventListener('click', function () {
-                if (currentStep > 1) {
-                    document.getElementById(`step${currentStep}`).style.display = 'none';
-                    currentStep--;
-                    document.getElementById(`step${currentStep}`).style.display = 'block';
-                }
-            });
+        // Generate 4 triwulan untuk tahun ini (dari recent ke lama)
+        selectPeriode.innerHTML = `<option value="">Pilih Periode</option>`;
+        
+        for (let i = 4; i >= 1; i--) {
+            const selected = (i === currentTriwulan) ? "selected" : "";
+            const option = document.createElement("option");
+            option.value = i;
+            option.text = `Triwulan ${i} ${currentYear}`;
+            option.selected = selected !== "";
+            selectPeriode.add(option);
+        }
+    </script>
 
-            // === Fungsi umum Add & Remove per step ===
-            function addDynamicSection(buttonId, containerId, itemClass) {
-                const addButton = document.getElementById(buttonId);
-                const container = document.getElementById(containerId);
+    <script>
+        // === Form Filter: tampilkan tabel setelah klik submit ===
+        document.getElementById('filterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-                addButton.addEventListener('click', function () {
-                    const template = container.querySelector(`.${itemClass}`);
-                    const clone = template.cloneNode(true);
+            const periode = document.getElementById('periode').value;
+            const jenisData = document.getElementById('jenisData').value;
 
-                    // Kosongkan semua input
-                    clone.querySelectorAll('input, select').forEach(el => el.value = '');
-
-                    // Tambahkan tombol hapus hanya untuk duplikat
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = 'button';
-                    removeBtn.className = 'btn btn-danger mt-2 remove-btn';
-                    removeBtn.textContent = 'Hapus';
-                    removeBtn.addEventListener('click', () => clone.remove());
-                    clone.appendChild(removeBtn);
-
-                    container.appendChild(clone);
-                });
+            if (!periode || !jenisData) {
+                Swal.fire('Peringatan', 'Silakan pilih Periode dan Bidang terlebih dahulu.', 'warning');
+                return;
             }
 
-            // === Inisialisasi tiap step ===
-            addDynamicSection('add-program', 'program-container', 'program-item');
-            addDynamicSection('add-kegiatan', 'kegiatan-container', 'kegiatan-item');
-            addDynamicSection('add-pegawai', 'pegawai-container', 'pegawai-item');
+            // Simulasi jumlah laporan (nanti bisa dari API)
+            const jumlahLaporan = Math.floor(Math.random() * 100) + 1;
+
+            // Format tanggal sekarang
+            const now = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' });
+
+            // Isi infoData
+            document.getElementById('judulData').innerText =
+                `${jenisData.charAt(0).toUpperCase() + jenisData.slice(1)} (${jumlahLaporan} Laporan)`;
+
+            document.getElementById('tanggalData').innerText =
+                `Data per tanggal ${now}`;
+
+            document.getElementById('infoData').style.display = 'block';
+
+            // tampilkan tabel
+            document.getElementById('dataContainer').style.display = 'block';
+
+            // inisialisasi DataTable
+            if (!$.fn.DataTable.isDataTable('#example1')) {
+                $('#example1').DataTable({
+                    responsive: false,
+                    scrollX: true
+                });
+            }
         });
     </script>
 @endsection
