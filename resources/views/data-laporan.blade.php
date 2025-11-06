@@ -26,6 +26,62 @@
                 </div>
             @endif
 
+            <!-- Filter Section -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Filter Data</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="GET" action="{{ route('data-industri') }}" class="row g-3">
+                                <div class="col-md-3">
+                                    <label for="triwulan" class="form-label">Triwulan</label>
+                                    <select name="triwulan" id="triwulan" class="form-control">
+                                        <option value="">Semua Triwulan</option>
+                                        @foreach($triwulanList ?? [] as $t)
+                                            <option value="{{ $t }}" {{ request('triwulan') == $t ? 'selected' : '' }}>
+                                                {{ $t }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="tahun" class="form-label">Tahun</label>
+                                    <select name="tahun" id="tahun" class="form-control">
+                                        <option value="">Semua Tahun</option>
+                                        @foreach($tahunList ?? [] as $th)
+                                            <option value="{{ $th }}" {{ request('tahun') == $th ? 'selected' : '' }}>
+                                                {{ $th }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="bidang" class="form-label">Bidang</label>
+                                    <select name="bidang" id="bidang" class="form-control">
+                                        <option value="">Semua Bidang</option>
+                                        @foreach($bidangList ?? [] as $b)
+                                            <option value="{{ $b }}" {{ request('bidang') == $b ? 'selected' : '' }}>
+                                                {{ $b }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-success me-2">
+                                        <i class="fas fa-filter"></i> Filter
+                                    </button>
+                                    <a href="{{ route('data-industri') }}" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> Reset
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -54,33 +110,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($pelakuUsaha as $usaha)
+                                    @forelse ($laporans as $laporan)
+                                        @foreach ($laporan->programs as $program)
+                                            <tr>
+                                                <td>{{ optional($program->pegawaiPelapor)->nama_pegawai ?? '-' }}</td>
+                                                <td>{{ optional($program->pegawaiPelapor)->jabatan ?? '-' }}</td>
+                                                <td>{{ optional($program->pimpinanMonev)->nama_pegawai ?? '-' }}</td>
+                                                <td>{{ optional($program->pimpinanMonev)->jabatan ?? '-' }}</td>
+                                                <td>{{ $program->program }}</td>
+                                                <td>{{ $program->indikator_program }}</td>
+                                                <td>{{ $program->satuan_program }}</td>
+                                                <td>{{ number_format($program->target_program, 2) }}</td>
+                                                <td>{{ number_format($program->realisasi_kinerja_program, 2) }}</td>
+                                                <td>{{ number_format($program->persen_kinerja_program, 2) }}%</td>
+                                                <td>{{ number_format($program->pagu_program, 2) }}</td>
+                                                <td>{{ number_format($program->realisasi_keuangan_program, 2) }}</td>
+                                                <td>{{ number_format($program->persen_keuangan_program, 2) }}%</td>
+                                                <td>{{ $program->keterangan_program }}</td>
+                                                <td>{{ $program->faktor_pendorong_program }}</td>
+                                                <td>{{ $program->faktor_penghambat_program }}</td>
+                                                <td>{{ $program->rekomendasi_program }}</td>
+                                                <td>
+                                                    <a href="{{ route('data-industri.edit', $laporan->id_laporan) }}"
+                                                        class="btn btn-warning btn-sm">Edit</a>
+                                                    <button class="btn btn-danger btn-sm"
+                                                        onclick="confirmDelete('{{ route('data-industri.delete', $laporan->id_laporan) }}')">Hapus</button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @empty
                                         <tr>
-                                            <td>{{ $usaha->nama }}</td>
-                                            <td>{{ $usaha->NIB }}</td>
-                                            <td>{{ $usaha->jenis_badan_usaha }}</td>
-                                            <td>{{ $usaha->id_kbli }}</td>
-                                            <td>{{ optional($usaha->kbli)->jenis_kbli }}</td>
-                                            <td>{{ $usaha->skala_usaha }}</td>
-                                            <td>{{ $usaha->risiko }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($usaha->tanggal_permohonan)->format('Y-m-d') }}</td>
-                                            <td>{{ $usaha->jenis_proyek }}</td>
-                                            <td>{{ $usaha->email }}</td>
-                                            <td>{{ $usaha->no_telp }}</td>
-                                            <td>{{ $usaha->alamat->alamat_usaha }}</td>
-                                            <td>{{ $usaha->alamat->kecamatan }}</td>
-                                            <td>{{ $usaha->alamat->kelurahan }}</td>
-                                            <td>{{ $usaha->tenagaKerja->jumlah_tki_perempuan + $usaha->tenagaKerja->jumlah_tki_laki_laki + $usaha->tenagaKerja->jumlah_tenaga_kerja_asing }}</td>
-                                            <td>{{ $usaha->investasi->modal_usaha }}</td>
-                                            <td>{{ $usaha->investasi->investasi_mesin }}</td>
-                                            <td>
-                                                <a href="{{ route('data-industri.edit', $usaha->id_usaha) }}"
-                                                    class="btn btn-warning btn-sm">Edit</a>
-                                                <button class="btn btn-danger btn-sm"
-                                                    onclick="confirmDelete('{{ route('data-industri.delete', $usaha->id_usaha) }}')">Hapus</button>
-                                            </td>
+                                            <td colspan="18" class="text-center">Tidak ada data laporan</td>
                                         </tr>
-                                    @endforeach
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -94,32 +156,9 @@
         $(document).ready(function() {
             $('#example1').DataTable({
                 responsive: false,
-                scrollX: true
-                columnDefs: [{
-                    targets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-                    className: 'dt-head-center'
-                }],
-                columns: [
-                    {data: "nama"},
-                    {data: "NIB"},
-                    {data: "jenis_badan_usaha"},
-                    {data: "id_kbli"},
-                    {data: "kbli.jenis_kbli"},
-                    {data: "kbli.kode_kbli"},
-                    {data: "skala_usaha"},
-                    {data: "risiko"},
-                    {data: "tanggal_permohonan", render: function(data, type, row) {return moment(data).format('YYYY-MM-DD');}},
-                    {data: "jenis_proyek"},
-                    {data: "email"},
-                    {data: "no_telp"},
-                    {data: "alamat.alamat_usaha"},
-                    {data: "alamat.kecamatan"},
-                    {data: "alamat.kelurahan"},
-                    {data: "total_tenaga_kerja"},
-                    {data: "investasi.modal_usaha"},
-                    {data: "investasi.investasi_mesin"},
-                    {data: "aksi"}
-                ]
+                scrollX: true,
+                order: [[0, 'asc']],
+                pageLength: 25
             });
         });
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\KbliController;
+use App\Http\Controllers\PegawaiController;
 use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
@@ -21,12 +22,12 @@ Route::get('/moka/data-laporan/edit-industri/{id}', [DataController::class, 'edi
 Route::put('/moka/data-laporan/{id}', [DataController::class, 'updateindustri'])->name('data-industri.update');
 
 // Data Pegawai
-Route::get('/moka/data-pegawai', [KbliController::class, 'showkbli'])->name('data-kbli');
-Route::get('/moka/data-pegawai/input-kbli', [KbliController::class, 'inputkbli'])->name('data-kbli.input');
-Route::post('/moka/data-pegawai', [KbliController::class, 'storekbli'])->name('data-kbli.store');
-Route::get('/moka/data-pegawai/edit-kbli/{id}', [KbliController::class, 'editkbli'])->name('data-kbli.edit');
-Route::put('/moka/data-pegawai/update-kbli/{id}', [KbliController::class, 'updatekbli'])->name('data-kbli.update');
-Route::delete('/moka/data-pegawai/delete-kbli/{id}', [KbliController::class, 'deletekbli'])->name('data-kbli.delete');
+Route::get('/moka/data-pegawai', [PegawaiController::class, 'index'])->name('data-pegawai');
+Route::get('/moka/data-pegawai/input-kbli', [PegawaiController::class, 'create'])->name('data-pegawai.input');
+Route::post('/moka/data-pegawai', [PegawaiController::class, 'store'])->name('data-pegawai.store');
+Route::get('/moka/data-pegawai/edit-kbli/{id}', [PegawaiController::class, 'edit'])->name('data-pegawai.edit');
+Route::put('/moka/data-pegawai/update-kbli/{id}', [PegawaiController::class, 'update'])->name('data-pegawai.update');
+Route::delete('/moka/data-pegawai/delete-kbli/{id}', [PegawaiController::class, 'destroy'])->name('data-pegawai.delete');
 
 // API Data Industri kelurahan
 Route::get('/api/industri-kelurahan', function () {

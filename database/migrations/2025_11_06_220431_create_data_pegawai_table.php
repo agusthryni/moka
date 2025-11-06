@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kbli', function (Blueprint $table) {
-            $table->string('id_kbli', 5)->primary();
-            $table->string('jenis_kbli');
+        Schema::create('data_pegawai', function (Blueprint $table) {
+            $table->bigIncrements('id_pegawai');
+            $table->string('nama_pegawai', 255);
+            $table->string('nip', 20)->unique();
+            $table->string('jabatan', 255);
+            $table->enum('bidang', ['Sekretariat', 'TSDI', 'IKM', 'Koperasi', 'UPT']);
             $table->timestamps();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kbli');
+        Schema::dropIfExists('data_pegawai');
     }
 };

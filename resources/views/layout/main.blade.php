@@ -92,8 +92,8 @@
                         </a>
                     </li>
                     <li class="nav-item mx-2">
-                        <a href="{{ route('data-kbli') }}" 
-                        class="nav-link text-success {{ request()->routeIs('data-kbli') ? 'font-weight-bold' : '' }}">
+                        <a href="{{ route('data-pegawai') }}" 
+                        class="nav-link text-success {{ request()->routeIs('data-pegawai*') ? 'font-weight-bold' : '' }}">
                         Data Pegawai
                         </a>
                     </li>
@@ -195,5 +195,6 @@
             });
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

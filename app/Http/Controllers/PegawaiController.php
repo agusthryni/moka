@@ -2,111 +2,138 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kbli;
+use App\Models\DataPegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class KbliController extends Controller
+class PegawaiController extends Controller
 {
-    public function showkbli()
+    public function index()
     {
-        $kbli_industri = Kbli::all();
-        return view('kbli', compact('kbli_industri'));
+        $pegawai = DataPegawai::orderBy('nama_pegawai')->get();
+        return view('data-pegawai', compact('pegawai'));
     }
 
-    public function inputkbli()
+    public function create()
     {
-        return view('input-kbli');
+        return view('input-pegawai');
     }
 
-    public function storekbli(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_kbli.*' => 'required|string|size:5|distinct',
-            'jenis_kbli.*' => 'required|string|max:255',
+            'nama_pegawai.*' => 'required|string|max:255',
+            'nip.*' => 'required|string|max:20',
+            'jabatan.*' => 'required|string|max:255',
+            'bidang.*' => 'required|in:Sekretariat,TSDI,IKM,Koperasi,UPT',
         ]);
+
+        // Check for duplicate NIPs in the same request
+        $nips = $validated['nip'];
+        if (count($nips) !== count(array_unique($nips))) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terdapat NIP duplikat dalam data yang dimasukkan.'
+            ], 400);
+        }
 
         DB::beginTransaction();
         try {
-            foreach ($validated['id_kbli'] as $index => $id_kbli) {
-                if (Kbli::where('id_kbli', $id_kbli)->exists()) {
+            foreach ($validated['nama_pegawai'] as $index => $nama_pegawai) {
+                // Check if NIP already exists
+                if (DataPegawai::where('nip', $validated['nip'][$index])->exists()) {
+                    DB::rollBack();
                     return response()->json([
-                        'error' => 'KBLI ' . $id_kbli . ' sudah ada sebelumnya.'
-                    ], 422);
+                        'status' => 'error',
+                        'message' => 'NIP ' . $validated['nip'][$index] . ' sudah ada sebelumnya.'
+                    ], 400);
                 }
-                Kbli::create([
-                    'id_kbli' => $id_kbli,
-                    'jenis_kbli' => $validated['jenis_kbli'][$index],
+
+                DataPegawai::create([
+                    'nama_pegawai' => $nama_pegawai,
+                    'nip' => $validated['nip'][$index],
+                    'jabatan' => $validated['jabatan'][$index],
+                    'bidang' => $validated['bidang'][$index],
                 ]);
             }
+
             DB::commit();
             return response()->json([
-                'success' => 'Data berhasil disimpan.'
+                'status' => 'success',
+                'message' => 'Data pegawai berhasil disimpan.'
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'error' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    public function editkbli ($id_kbli)
+    public function edit($id)
     {
-        $kbli = Kbli::findOrFail($id_kbli);
-        return view('edit-kbli', compact('kbli'));
+        $pegawai = DataPegawai::findOrFail($id);
+        return view('edit-pegawai', compact('pegawai'));
     }
 
-    public function updatekbli(Request $request, $id_kbli)
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'id_kbli' => 'required|string|size:5',
-            'jenis_kbli' => 'required|string|max:255',
+            'nama_pegawai' => 'required|string|max:255',
+            'nip' => 'required|string|max:20',
+            'jabatan' => 'required|string|max:255',
+            'bidang' => 'required|in:Sekretariat,TSDI,IKM,Koperasi,UPT',
         ]);
 
         DB::beginTransaction();
         try {
-            // Check for duplicate id_kbli
-            $duplicateCheck = Kbli::where('id_kbli', $validated['id_kbli'])
-                                    ->where('id_kbli', '!=', $id_kbli)
-                                    ->exists();
+            // Check for duplicate NIP
+            $duplicateCheck = DataPegawai::where('nip', $validated['nip'])
+                ->where('id_pegawai', '!=', $id)
+                ->exists();
 
             if ($duplicateCheck) {
                 return response()->json([
-                    'error' => ' KBLI yang anda masukkan sudah ada sebelumnya.'
-                ], 422);
+                    'status' => 'error',
+                    'message' => 'NIP yang anda masukkan sudah ada sebelumnya.'
+                ], 400);
             }
 
-            $kbli = Kbli::findOrFail($id_kbli);
-            $kbli->update([
-                'id_kbli' => $validated['id_kbli'],
-                'jenis_kbli' => $validated['jenis_kbli'],
+            $pegawai = DataPegawai::findOrFail($id);
+            $pegawai->update([
+                'nama_pegawai' => $validated['nama_pegawai'],
+                'nip' => $validated['nip'],
+                'jabatan' => $validated['jabatan'],
+                'bidang' => $validated['bidang'],
             ]);
 
             DB::commit();
             return response()->json([
-                'success' => 'Data berhasil diperbarui.'
+                'status' => 'success',
+                'message' => 'Data pegawai berhasil diperbarui.'
             ]);
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return response()->json([
-                    'error' => 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage()
-                ], 500);
-            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat memperbarui data: ' . $e->getMessage()
+            ], 500);
         }
+    }
 
-    public function deletekbli($id_kbli)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try {
-            $kbli = Kbli::findOrFail($id_kbli);
-            $kbli->delete();
+            $pegawai = DataPegawai::findOrFail($id);
+            $pegawai->delete();
 
             DB::commit();
-            return redirect()->route('data-kbli')->with('success', 'Data berhasil dihapus.');
+            return redirect()->route('data-pegawai')->with('success', 'Data pegawai berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('data-kbli')->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
+            return redirect()->route('data-pegawai')->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
         }
     }
 }
